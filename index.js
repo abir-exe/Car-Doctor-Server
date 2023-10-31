@@ -9,11 +9,11 @@ const port = process.env.PORT || 5000;
 
 // middleware
 app.use(cors({
-  origin: ['http://localhost:5173'],
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
   credentials: true
 }));
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 
 console.log(process.env.DB_PASS)
@@ -42,12 +42,14 @@ async function run() {
     app.post('/jwt', async(req, res) => {
       const user = req.body;
       console.log(user);
-      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+      
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'
+    });
+
       res
       .cookie('token', token, {
         httpOnly: true,
-        secure: false,
-        // sameSite: 'none'
+        secure: false
       })
       .send({success: true})
     })
@@ -77,7 +79,7 @@ async function run() {
 
     app.get('/bookings', async(req, res) => {
       console.log(req.query.email);
-      console.log('tok tok token', req.cookies.token)
+      console.log('tttt token', req.cookies.token)
       let query = {};
       if (req.query?.email) {
         query = { email: req.query.email }
