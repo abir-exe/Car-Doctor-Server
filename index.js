@@ -31,7 +31,8 @@ const client = new MongoClient(uri, {
 
 // midddlewares 
 const logger = async( req, res, next ) => {
-  console.log('called', req.host, req.originalUrl)
+  // console.log('called', req.host, req.originalUrl)
+  console.log('log: info', req.method, req.url);
   next();
 }
 
@@ -49,8 +50,8 @@ const verifyToken = async(req, res, next) => {
     }
     // if token is valid then it would be decoded 
     console.log('value in the token', decoded)
-     req.user = decoded
-    next()
+     req.user = decoded;
+    next();
   })
 }
 
@@ -109,13 +110,18 @@ async function run() {
     }) 
 
     //bookings
-
     app.get('/bookings', logger, verifyToken, async(req, res) => {
       console.log(req.query.email);
       // console.log('tttt token', req.cookies.token)
-      console.log("user in the valid token", req.user)
-      if(req.query.email !== req.user.email){
-        return res.status(403).send({message: 'forbidden access'})
+      // console.log("user in the valid token", req.user)
+      // if(req.query.email !== req.user.email){
+      //   return res.status(403).send({message: 'forbidden access'})
+      // }
+      // console.log('cook cokkies',req.cookies)
+
+      console.log('token owner info', req.user)
+      if(req.user.email !== req.query.email){
+          return res.status(403).send({message: 'forbidden access'})
       }
       let query = {};
       if (req.query?.email) {
